@@ -74,18 +74,18 @@ def get_weather(region):
     weather_url = "https://devapi.qweather.com/v7/weather/now?location={}&key={}".format(location_id, key)
     response = get(weather_url, headers=headers).json()
     # 天气
-    weather = "当前天气" + response["now"]["text"]
+    weather = "当前天气：" + response["now"]["text"]
     # 当前温度
-    temp = "当前温度" + response["now"]["temp"] + u"\N{DEGREE SIGN}" + "C"
+    temp = "当前温度：" + response["now"]["temp"] + u"\N{DEGREE SIGN}" + "C"
     # 风向
     wind_dir = response["now"]["windDir"]
     otherInfo_url = "https://devapi.qweather.com/v7/weather/3d?location={}&key={}".format(location_id, key)
     response_info = get(otherInfo_url, headers=headers).json()
     infos = response_info["daily"][0]
     # 日出时间
-    sunrise = "日出时间：" + infos["sunrise"]
+    sunrise = infos["sunrise"]
     # 日落时间
-    sunset = "日落时间：" + infos["sunset"]
+    sunset = infos["sunset"]
     # 最低气温
     tempMin = "最低气温：" + infos["tempMin"] + u"\N{DEGREE SIGN}" + "C"
     # 最高气温
