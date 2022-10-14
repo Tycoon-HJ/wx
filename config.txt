@@ -5,10 +5,12 @@
 # 公众号appSecret
 "app_secret": "4b675f5c455132d5c5ac39f998bc83c8",
 # 模板消息id
-"template_id": "tyysDKMuM4fishrxQwJ6-yqvldVCBhPqUIb22k8G0aQ",
+"template_id": "1PNAZWzHj-e2ArG7DzSwRYQ8KdaleU_zGANN4m7rVN0",
 # 接收公众号消息的微信号，如果有多个，需要在[]里用英文逗号间隔，例如["weixin1", "weixin2"]
 "user": ["oRTYU6eo8Bcktv5ODZlvPBUS4dVA","oRTYU6QYtvFfVz42Td-Wr1u-Saqw"],
- 
+# 星座配置
+"key":"18be969e2d1cb53983406cc9fd7087cc",
+"consName":"射手座",
 # 信息配置
 # 和风天气apikey
 "weather_key": "722458036051464487b09768b9f57fc4",
