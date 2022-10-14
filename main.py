@@ -27,9 +27,28 @@ def get_access_token():
         print("获取access_token失败，请检查app_id和app_secret是否正确")
         os.system("pause")
         sys.exit(1)
-    # print(access_token)
     return access_token
- 
+
+# 获取星座的信息
+def get_constellation(key, consName):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+        'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+        'Content-Type':'application/x-www-form-urlencoded'
+    }
+    region_url = ("http://web.juhe.cn/constellation/getAll?consName={}&type=today&key={}").format(consName, key)
+    response = get(region_url, headers=headers).json()
+    name = response["name"]
+    QFriend = response["QFriend"]
+    color = response["color"]
+    health = response["health"]
+    love = response["love"]
+    work = response["work"]
+    money = response["money"]
+    number = response["number"]
+    summary = response["summary"]
+    all = response["all"]
+    return name, QFriend, color, health, love, work, money, number, summary, all
  
 def get_weather(region):
     headers = {
@@ -58,6 +77,7 @@ def get_weather(region):
     temp = response["now"]["temp"] + u"\N{DEGREE SIGN}" + "C"
     # 风向
     wind_dir = response["now"]["windDir"]
+
     return weather, temp, wind_dir
  
  
@@ -102,20 +122,8 @@ def get_birthday(birthday, year, today):
     return birth_day
  
  
-def get_ciba():
-    url = "http://open.iciba.com/dsapi/"
-    headers = {
-        'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
-    }
-    r = get(url, headers=headers)
-    note_en = r.json()["content"]
-    note_ch = r.json()["note"]
-    return note_ch, note_en
  
- 
-def send_message(to_user, access_token, region_name, weather, temp, wind_dir, note_ch, note_en):
+def send_message(to_user, access_token, region, weather, temp, wind_dir, name, QFriend, color, health, love, work, money, number, summary, all):
     url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)
     week_list = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
     year = localtime().tm_year
@@ -146,7 +154,7 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, no
                 "color": get_color()
             },
             "region": {
-                "value": region_name,
+                "value": region,
                 "color": get_color()
             },
             "weather": {
@@ -165,14 +173,47 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, no
                 "value": love_days,
                 "color": get_color()
             },
-            "note_en": {
-                "value": note_en,
+            "name": {
+                "value": name,
                 "color": get_color()
             },
-            "note_ch": {
-                "value": note_ch,
+            "QFriend": {
+                "value": QFriend,
+                "color": get_color()
+            },
+            "color": {
+                "value": color,
+                "color": get_color()
+            },
+            "health": {
+                "value": health,
+                "color": get_color()
+            },
+            "love": {
+                "value": love,
+                "color": get_color()
+            },
+            "work": {
+                "value": work,
+                "color": get_color()
+            },
+            "money": {
+                "value": money,
+                "color": get_color()
+            },
+            "number": {
+                "value": number,
+                "color": get_color()
+            },
+            "summary": {
+                "value": summary,
+                "color": get_color()
+            },
+            "all": {
+                "value": all,
                 "color": get_color()
             }
+            
         }
     }
     for key, value in birthdays.items():
@@ -221,13 +262,13 @@ if __name__ == "__main__":
     users = config["user"]
     # 传入地区获取天气信息
     region = config["region"]
+    
+    # 获取星座的信息
+    key = config["key"]
+    consName = config["consName"]
     weather, temp, wind_dir = get_weather(region)
-    note_ch = config["note_ch"]
-    note_en = config["note_en"]
-    if note_ch == "" and note_en == "":
-        # 获取词霸每日金句
-        note_ch, note_en = get_ciba()
+    name, QFriend, color, health, love, work, money, number, summary, all = get_constellation(key, consName)
     # 公众号推送消息
     for user in users:
-        send_message(user, accessToken, region, weather, temp, wind_dir, note_ch, note_en)
+        send_message(user, accessToken, region, weather, temp, wind_dir, name, QFriend, color, health, love, work, money, number, summary, all)
     os.system("pause")
